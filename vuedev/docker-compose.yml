@@ -1,0 +1,18 @@
+version: '2'
+services:
+  dev:
+    build: .
+    volumes:
+      - ./app:/app
+    working_dir: /app
+    privileged: true
+    ports:
+      - 8080:8080
+    command: bash -c "npm install && npm run dev"
+
+  dep:
+    image: nginx:latest
+    volumes:
+      - ./app:/usr/share/nginx/html
+    ports:
+      - 9000:80
