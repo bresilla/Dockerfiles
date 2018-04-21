@@ -1,18 +1,41 @@
-version: '2'
+version: '3'
 services:
-  dev:
-    build: .
+  frontend:
+    depends_on:
+      - backend 
+    build: ./DOCKER/frontend
     volumes:
-      - ./app:/app
+      - ./front:/app
     working_dir: /app
     privileged: true
     ports:
-      - 8080:8080
+      - 8000:8080
     command: bash -c "npm install && npm run dev"
 
-  dep:
+
+  database:
+    image: mongo
+    ports:
+      - 27017:27017
+    restart: always
+
+
+  backend:
+    links:
+      - database
+    build: ./DOCKER/backend
+    volumes:
+      - ./back:/app
+    working_dir: /app
+    privileged: true
+    ports:
+      - 5000:5000
+    command: python -u app.py 
+
+
+  runserver:
     image: nginx:latest
     volumes:
-      - ./app:/usr/share/nginx/html
+      - ./front/dist:/usr/share/nginx/html
     ports:
       - 9000:80
