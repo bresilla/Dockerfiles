@@ -1,3 +1,4 @@
-FROM python
+FROM node
 RUN  mkdir /app
-RUN pip install flask pymongo 
+RUN npm install -g express body-parser cors morgan
+EXPOSE 8081
