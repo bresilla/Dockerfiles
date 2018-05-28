@@ -1,4 +1,4 @@
-FROM nvidia/9.1-cudnn7-runtime
+FROM nvidia/cuda:9.1-cudnn7-runtime-ubuntu16.04
 LABEL maintainer="bresilla <trim.bresilla@gmail.com>"
 WORKDIR /
 
@@ -9,11 +9,9 @@ RUN apt-get update && \
 RUN pip3 install --upgrade pip setuptools && pip install --upgrade pip
 
 # 2. installing jupyter, and a bunch of Science Python Packages
-# packages taken from https://hub.docker.com/r/jupyter/datascience-notebook/
 RUN pip3 install jupyter pandas matplotlib scipy seaborn scikit-learn scikit-Image sympy cython patsy statsmodels cloudpickle dill numba bokeh
 
 # 3. installing Tensorflow (GPU)
-# see here https://www.tensorflow.org/install/install_linux#InstallingNativePip
 RUN pip3 install tensorflow-gpu
 
 # 4. installing OpenAI Gym (plus dependencies)
@@ -21,7 +19,6 @@ RUN pip3 install gym pyopengl
 # 4.1 installing roboschool and its dependencies. We love FOSS
 RUN apt-get install -y --no-install-recommends cmake ffmpeg pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
 # This got some dependencies, so let's get going
-# https://github.com/openai/roboschool
 WORKDIR /gym
 ENV ROBOSCHOOL_PATH="/gym/roboschool"
 # installing bullet (the physics engine of roboschool) and its dependencies
@@ -37,8 +34,7 @@ RUN apt-get install -y --no-install-recommends git gcc g++ && \
 WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
 
-# 5. installing X and xvfb so we can SEE the action using a remote desktop access (VNC)
-# and because this is the last apt, let's clean up after ourselves
+# 5. installing X and xvfb so we can SEE the action using a remote desktop access (VNC) and cleanup
 RUN apt-get install -y x11vnc xvfb fluxbox wmctrl && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/* 
