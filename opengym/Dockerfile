@@ -46,6 +46,4 @@ EXPOSE 8888
 # VNC Server
 EXPOSE 5900
 
-COPY run.sh /
-CMD ["/run.sh", "--allow-root"]
-    
+COPY run.sh /   
