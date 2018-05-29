@@ -1,21 +1,23 @@
-FROM bresilla/cudann
+FROM nvidia/cuda:9.0-cudnn7-devel
 LABEL maintainer="bresilla <trim.bresilla@gmail.com>"
 WORKDIR /
 
 # 1. installing python2 and python3
 RUN apt-get update && \
-	apt install -y --no-install-recommends python3-pip python-pip python3 python
+	apt install -y --no-install-recommends python3-pip python-pip python3 python python3-setuptools
 # 1.1 uppgrade pip and pip3
 RUN pip3 install --upgrade pip setuptools && pip install --upgrade pip
 
 # 2. installing jupyter, and a bunch of Science Python Packages
-RUN pip3 install jupyter pandas matplotlib scipy seaborn scikit-learn scikit-Image sympy cython patsy statsmodels cloudpickle dill numba bokeh
+RUN pip3 install jupyter pandas matplotlib scipy seaborn setuptools scikit-learn scikit-Image sympy cython patsy statsmodels cloudpickle dill numba bokeh
 
 # 3. installing Tensorflow (GPU)
 RUN pip3 install tensorflow-gpu
+RUN pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.0-cp35-cp35m-linux_x86_64.whl torchvision
+RUN pip3 install chainer cupy-cuda90 
 
 # 4. installing OpenAI Gym (plus dependencies)
-RUN pip3 install gym pyopengl
+RUN pip3 install gym pyopengl pyvirtualdisplay
 # 4.1 installing roboschool and its dependencies. We love FOSS
 RUN apt-get install -y --no-install-recommends cmake ffmpeg pkg-config qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
 # This got some dependencies, so let's get going
@@ -35,7 +37,8 @@ WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
 
 # 5. installing X and xvfb so we can SEE the action using a remote desktop access (VNC) and cleanup
-RUN apt-get install -y x11vnc xvfb fluxbox wmctrl && \
+RUN pip3 install tqdm gym[atari]
+RUN apt-get install -y x11vnc xvfb fluxbox wmctrl fish tmux ranger x11-apps && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/* 
 
@@ -46,4 +49,16 @@ EXPOSE 8888
 # VNC Server
 EXPOSE 5900
 
-COPY run.sh /   
+WORKDIR /
+
+RUN useradd -ms /bin/bash bresilla
+RUN export uid=1000 gid=1000 && \
+    mkdir -p /home/bresilla && \
+    echo "bresilla:x:${uid}:${gid}:bresilla,,,:/home/bresilla:/bin/bash" >> /etc/passwd && \
+    echo "bresilla:x:${uid}:" >> /etc/group && \
+    echo "bresilla ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/bresilla && \
+    chmod 0440 /etc/sudoers.d/bresilla && \
+    chown ${uid}:${gid} -R /home/bresilla
+
+
+COPY x11vnc /
