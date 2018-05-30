@@ -4,9 +4,9 @@ WORKDIR /
 
 # 1. installing python2 and python3
 RUN apt-get update && \
-	apt install -y --no-install-recommends python3-pip python-pip python3 python python3-setuptools
+	apt install -y --no-install-recommends python python3 python-pip python3-pip python-setuptools python3-setuptools python-tk python3-tk
 # 1.1 uppgrade pip and pip3
-RUN pip3 install --upgrade pip setuptools && pip install --upgrade pip
+RUN pip3 install --upgrade pip setuptools && pip install --upgrade pip setuptools
 
 # 2. installing jupyter, and a bunch of Science Python Packages
 RUN pip3 install jupyter pandas matplotlib scipy seaborn setuptools scikit-learn scikit-Image sympy cython patsy statsmodels cloudpickle dill numba bokeh
@@ -15,6 +15,8 @@ RUN pip3 install jupyter pandas matplotlib scipy seaborn setuptools scikit-learn
 RUN pip3 install tensorflow-gpu
 RUN pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.0-cp35-cp35m-linux_x86_64.whl torchvision
 RUN pip3 install chainer cupy-cuda90 
+RUN pip3 install keras
+
 
 # 4. installing OpenAI Gym (plus dependencies)
 RUN pip3 install gym pyopengl pyvirtualdisplay
