@@ -1,6 +1,6 @@
 #FROM bresilla/basedev
 FROM bresilla/basegui
-LABEL maintainer="bresilla <trim.bresilla@gmail.com>"
+LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 WORKDIR /
 
 # Install DEEP-LEARNING libraries
