@@ -15,7 +15,7 @@ RUN sudo apt-get update && \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/* 
 
 # Installing OpenAI Gym
-RUN pip3 install gym gym[atari]  
+RUN pip3 install gym gym[atari] tqdm 
 
 # Installing roboschool
 WORKDIR /gym
@@ -32,10 +32,9 @@ WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
 
 RUN sudo apt-get update && \
-	apt-get install --no-install-recommends -y firefox mate-terminal \
+	apt-get install --no-install-recommends -y mate-terminal \
 	&& apt-get clean && rm -rf /var/lib/apt/lists/* 
 
-RUN pip3 install tqdm
 
 # TensorBoard
 EXPOSE 6006
