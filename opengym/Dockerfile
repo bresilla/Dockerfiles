@@ -40,7 +40,7 @@ RUN	pip3 install -e ./
 
 # 5. installing X and xvfb so we can SEE the action using a remote desktop access (VNC) and cleanup
 RUN pip3 install tqdm gym[atari]
-RUN apt-get install -y x11vnc xvfb fluxbox wmctrl fish tmux ranger x11-apps && \
+RUN apt-get install -y x11vnc xvfb fluxbox wmctrl fish tmux ranger x11-apps firefox && \
         apt-get clean && \
         rm -rf /var/lib/apt/lists/* 
 

@@ -1,5 +1,5 @@
 FROM nvidia/cuda:9.0-cudnn7-devel
-#FROM ubuntu:latest
+#FROM ubuntu:16.04
 LABEL maintainer="bresilla <trim.bresilla@gmail.com>"
 WORKDIR /
 
@@ -7,10 +7,10 @@ WORKDIR /
 RUN DEBIAN_FRONTEND=noninteractive apt-get update -y --no-install-recommends && \ 
 	apt-get install -y --no-install-recommends software-properties-common && \
 	apt-get install -y --no-install-recommends apt-utils && \ 
+	apt-get install -y --no-install-recommends pkg-config debconf dpkg && \
 	apt-get install -y --no-install-recommends \ 
 	build-essential \
 	cmake \
-	pkg-config \
 	automake \ 
 	libpq-dev \ 
 	libffi-dev \ 
@@ -30,6 +30,7 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y --no-install-recommends && 
 	fish \
 	vim \
 	openssh-server \
+	openssl \
 	tmux \
 	ranger \
 	net-tools \
@@ -81,6 +82,3 @@ RUN echo "${USER}:x:${UID}:${GID}:${USER},,,:/home/${USER}:/bin/bash" >> /etc/pa
 # CLEANUP
 RUN apt-get clean && \
         rm -rf /var/lib/apt/lists/* 
-
-# IPython
-EXPOSE 8888

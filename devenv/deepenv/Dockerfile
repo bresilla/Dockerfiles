@@ -9,11 +9,15 @@ RUN pip3 install http://download.pytorch.org/whl/cu90/torch-0.4.0-cp35-cp35m-lin
 RUN pip3 install chainer cupy-cuda90 
 RUN pip3 install keras
 
+# Installig some needed tools
+RUN sudo apt-get update && \
+	apt-get install -y --no-install-recommends ffmpeg qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* 
+
 # Installing OpenAI Gym
-RUN pip3 install gym gym[atari] baselines 
+RUN pip3 install gym gym[atari]  
 
 # Installing roboschool
-RUN apt-get install -y --no-install-recommends ffmpeg qtbase5-dev libqt5opengl5-dev libassimp-dev libpython3.5-dev libboost-python-dev libtinyxml-dev
 WORKDIR /gym
 ENV ROBOSCHOOL_PATH="/gym/roboschool"
 # Installing bullet (the physics engine of roboschool)
@@ -26,3 +30,20 @@ RUN git clone https://github.com/openai/roboschool && \
 	make install
 WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
+
+RUN sudo apt-get update && \
+	apt-get install --no-install-recommends -y firefox mate-terminal \
+	&& apt-get clean && rm -rf /var/lib/apt/lists/* 
+
+RUN pip3 install tqdm
+
+# TensorBoard
+EXPOSE 6006
+# IPython
+EXPOSE 8888
+
+WORKDIR /
+
+ENV NVIDIA_VISIBLE_DEVICES all
+ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics,compat32
+ENV NVIDIA_REQUIRE_CUDA "cuda>=9.0"
