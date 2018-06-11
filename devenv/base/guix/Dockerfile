@@ -1,4 +1,4 @@
-FROM bresilla/basedev
+FROM bresilla/base
 LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 
 WORKDIR /
@@ -26,16 +26,13 @@ ENV PATH ${PATH}:/opt/libjpeg-turbo/bin:/opt/VirtualGL/bin:/opt/TurboVNC/bin
 RUN echo 'no-remote-connections\n no-httpd\n no-x11-tcp-connections\n no-pam-sessions\n permitted-security-types = otp,tlsnone,x509none,none' > /etc/turbovncserver-security.conf
 
 # INSTALL WM or DM
-RUN apt-get install -y --no-install-recommends xdg-utils xdg-user-dirs menu menu-xdg mime-support desktop-file-utils
-RUN apt-get install -y --no-install-recommends xfce4 xfce4-goodies gnome-icon-theme-full
-RUN add-apt-repository -y ppa:gusbemacbe/ppa && apt-get update && apt-get install -y --no-install-recommends suru-plus-pack
+RUN apt-get install -y --no-install-recommends xdg-utils xdg-user-dirs menu menu-xdg mime-support desktop-file-utils feh
+RUN apt-get install -y --no-install-recommends xfce4 xfce4-goodies
+RUN add-apt-repository -y ppa:gusbemacbe/ppa && apt-get update && apt-get install -y --no-install-recommends suru-plus-pack \
+    && rm -r "Dark'" "Lubuntu'" "'Suru++" "'Suru++'" "Telinkrin'" "United'" "Walls'"
 RUN add-apt-repository -y ppa:dyatlov-igor/materia-theme && apt-get update && apt-get install -y --no-install-recommends materia-gtk-theme
 RUN mkdir -p /root/.vnc/ && echo '#!/bin/sh \nunset SESSION_MANAGER \nunset DBUS_SESSION_BUS_ADDRESS \nstartxfce4 &' \
     >> /root/.vnc/xstartup.turbovnc && chmod a+x /root/.vnc/xstartup.turbovnc
-
-#Expose VNC and noVNC
-EXPOSE 5900 5901 6080 40001
-
 
 
 #CLEAN-UP
@@ -43,13 +40,19 @@ RUN apt-get install -y --no-install-recommends pciutils
 RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 #MAKE START SCRIPT
-RUN echo "#!/bin/bash\n /opt/TurboVNC/bin/vncserver -securitytypes tlsnone,x509none,none -3dwm && /opt/noVNC/utils/launch.sh --vnc localhost:5900" \
+RUN echo "#!/bin/bash\n /opt/TurboVNC/bin/vncserver -3dwm -securitytypes tlsnone,x509none,none && /opt/noVNC/utils/launch.sh --vnc localhost:5900" \
     >> /usr/local/sbin/start && chmod a+x /usr/local/sbin/start
 RUN echo "#!/bin/bash\n x11vnc -create -env FD_PROG=/usr/bin/mate-session -env X11VNC_CREATE_GEOM=${1:-1920x1080x16} -gone 'killall Xvfb' -bg -nopw & opt/noVNC/utils/launch.sh --vnc localhost:5900" \
     >> /usr/local/sbin/launch && chmod a+x /usr/local/sbin/launch
 
-ENV DEBIAN_FRONTEND newt
+#EXPOSE VNC and noVNC
+EXPOSE 5900 5901 6080 40001
 
+#ENV VARIABLES
+ENV DEBIAN_FRONTEND newt
+ENV DISPLAY=:1
+
+#ENV LD_LIBRARY_PATH /opt/openssl/lib:${LD_LIBRARY_PATH}
 ENV NVIDIA_VISIBLE_DEVICES all
 ENV NVIDIA_DRIVER_CAPABILITIES compute,utility,graphics,display
 ENV NVIDIA_REQUIRE_CUDA "cuda>=9.0"

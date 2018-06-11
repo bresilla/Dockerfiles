@@ -1,5 +1,4 @@
-#FROM bresilla/basedev
-FROM bresilla/basegui
+FROM bresilla/guix
 LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 WORKDIR /
 
@@ -28,10 +27,8 @@ RUN git clone https://github.com/openai/roboschool && git clone https://github.c
 WORKDIR /gym/roboschool
 RUN	pip3 install -e ./
 
-#DELETE NEXT BUILD
-RUN apt-get install -y --no-install-recommends iptables
-
 #CLEAN-UP
+RUN apt-get install -y --no-install-recommends iptables qt4-default qt5-default
 RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 # TensorBoard IPython

@@ -1,4 +1,4 @@
-FROM bresilla/deepdev:latest
+FROM bresilla/deep
 LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 
 #USEFUL LIBRARIES
@@ -62,13 +62,14 @@ RUN cd tmp/sophus/build && make install
 #GEOLOCATION TOOLS
 RUN apt-get -y --quiet --no-install-recommends install ant geographiclib-tools libgeographic-dev &&  geographiclib-get-geoids egm96-5
 
+RUN  wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-662047.jpg -O /usr/share/backgrounds/xfce/wall
+
 #CLEAN-UP
 RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
 
 ENV PATH="/usr/lib/ccache:$PATH" 
 ENV TERM=xterm
 ENV QT_X11_NO_MITSHM 1
-#ENV SVGA_VGPU10 0
 ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 
 # SITL UDP PORTS 
