@@ -8,7 +8,6 @@ RUN apt-get update -y --no-install-recommends && apt-get -y --quiet --no-install
     libtiff5-dev libjasper-dev libpng12-dev libgtk2.0-dev libavcodec-dev libavformat-dev libswscale-dev libv4l-dev libatlas-base-dev libavresample-dev \
     libgphoto2-dev libgstreamer-plugins-base1.0-dev libdc1394-22-dev yasm libprotobuf-dev libgoogle-glog-dev
 
-RUN python -m pip install --upgrade pip==9.0.3 && pip install setuptools wheel && pip install argparse jinja2 empy numpy requests serial toml
 
 # astyle v2.06 
 RUN wget -q https://downloads.sourceforge.net/project/astyle/astyle/astyle%202.06/astyle_2.06_linux.tar.gz -O /tmp/astyle.tar.gz \
@@ -61,8 +60,6 @@ RUN cd tmp/sophus/build && make install
 
 #GEOLOCATION TOOLS
 RUN apt-get -y --quiet --no-install-recommends install ant geographiclib-tools libgeographic-dev &&  geographiclib-get-geoids egm96-5
-
-RUN  wget https://wallpapers.wallhaven.cc/wallpapers/full/wallhaven-662047.jpg -O /usr/share/backgrounds/xfce/wall
 
 #CLEAN-UP
 RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
