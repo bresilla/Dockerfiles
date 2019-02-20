@@ -37,15 +37,11 @@ RUN python3 -m pip install --upgrade && pip3 install cython pylint numpy matplot
 	pip3 install seaborn scikit-learn scikit-Image sympy patsy keras statsmodels cloudpickle dill numba bokeh pyopengl pyvirtualdisplay
 RUN python -m pip install --upgrade && pip install setuptools wheel && pip install argparse jinja2 empy numpy requests serial toml
 
-#CLEAN-UP
-RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
 # ADDING USER
 ARG USER=bresilla
 ARG GROUP=bresilla
 ARG UID=1000
 ARG GID=1000
-
 RUN groupadd --gid ${GID} ${GROUP} && \ 
 	useradd --uid ${UID} --gid ${GID} --shell /bin/bash --create-home --home /home/${USER} ${USER}
 RUN echo "${USER}:x:${UID}:${GID}:${USER},,,:/home/${USER}:/bin/bash" >> /etc/passwd && \
@@ -53,3 +49,9 @@ RUN echo "${USER}:x:${UID}:${GID}:${USER},,,:/home/${USER}:/bin/bash" >> /etc/pa
     echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USER} && \
     chmod 0440 /etc/sudoers.d/${USER} && \
     chown $UID:${GID} -R /home/${USER}
+
+#WORKDIR
+RUN mkdir /workdir
+
+#CLEAN-UP
+RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*

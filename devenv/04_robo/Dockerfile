@@ -1,15 +1,10 @@
 FROM bresilla/deep
 LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 
-#UPDATE
-RUN apt-get update -y --no-install-recommends && apt-get install fzy
-
 # OPENCV
 RUN apt-get install -y --no-install-recommends libjpeg-dev libpng-dev libtiff-dev unzip && \
 	apt-get install -y --no-install-recommends libavcodec-dev libavformat-dev libswscale-dev libv4l-dev && \
-	apt-get install -y --no-install-recommends libxvidcore-dev libx264-dev && \
-	apt-get install -y --no-install-recommends libgtk-3-dev && \
-	apt-get install -y --no-install-recommends libatlas-base-dev gfortran
+	apt-get install -y --no-install-recommends libxvidcore-dev libx264-dev libgtk-3-dev libatlas-base-dev
 RUN git clone https://github.com/Itseez/opencv_contrib.git /tmp/opencv_contrib&& cd /tmp/opencv_contrib && git checkout 4.0.0
 RUN git clone https://github.com/Itseez/opencv.git /tmp/opencv && cd /tmp/opencv && git checkout 4.0.0
 RUN cd /tmp/opencv && mkdir release && cd release && cmake \
@@ -26,8 +21,9 @@ RUN cd /tmp/opencv && mkdir release && cd release && cmake \
     -D WITH_V4L=ON \
     -D WITH_XINE=ON \
     -D WITH_TBB=ON ..
-RUN cd /tmp/opencv/release && make -j $(nproc) && make install 
-RUN cd /usr/lib/python3.6/ && ln -s /usr/local/python/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so cv2.so
+RUN cd /tmp/opencv/release && make -j $(nproc) && make install && cd /
+RUN ln -s /usr/local/python/cv2/python-3.6/cv2.cpython-36m-x86_64-linux-gnu.so /usr/lib/python3.6/cv2.so
+RUN apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* /root/.cache/*
 
 #ROS
 RUN echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list
@@ -38,7 +34,7 @@ RUN pip3 install -U rosdep rosinstall_generator wstool rosinstall rospkg catkin_
 
 #MAVLINK
 RUN git clone --depth 1 https://github.com/mavlink/c_library_v2.git /usr/local/include/mavlink/v2.0 && rm -rf /usr/local/include/mavlink/v2.0/.git
-RUN apt-get -y --quiet --no-install-recommends install ant geographiclib-tools libgeographic-dev &&  geographiclib-get-geoids egm96-5
+RUN apt-get -y --quiet --no-install-recommends install ant geographiclib-tools libgeographic-dev && geographiclib-get-geoids egm96-5
 
 # SITL UDP PORTS 
 EXPOSE 14556/udp 
@@ -49,13 +45,11 @@ EXPOSE 11345
 ENV PATH="/usr/lib/ccache:$PATH" 
 ENV TERM=xterm
 ENV QT_X11_NO_MITSHM 1
-ENV JAVA_TOOL_OPTIONS=-Dfile.encoding=UTF8
 RUN echo 'source /opt/ros/melodic/setup.bash \nexport CATKIN_PATH=/workdir' >> /root/.bashrc
 
 #LAST-MINUTE INSTALL
-RUN apt-get -y --no-install-recommends fzy
+RUN apt-get install -y --no-install-recommends ncdu fzy
 
 #CLEAN-UP
-RUN cd /tmp/ && sudo rm -ri * && mkdir /workdir
+RUN apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* /root/.cache/*
 WORKDIR /workdir
-RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*

@@ -3,7 +3,7 @@ LABEL maintainer="bresilla <bresilla.bresilla@gmail.com>"
 
 RUN apt-get update -y --no-install-recommends && apt-get -y --quiet install dbus-x11 procps psmisc kmod dirmngr && \
     apt-get -y --quiet install xvfb x11vnc xserver-xorg xserver-xorg-video-dummy xinit mesa-utils mesa-utils-extra && \  
-    apt-get -y --quiet install libglu1 libxv1 libxv-dev libxrender1 libxext6 libsm6 libxt-dev xfonts-base
+    apt-get -y --quiet install libglu1 libxv1 libxv-dev libxrender1 libxext6 libsm6 libxt-dev xfonts-base qt5-default
 
 ARG TURBOVNC_VERSION=2.2
 ARG VIRTUALGL_VERSION=2.6
@@ -36,9 +36,6 @@ RUN add-apt-repository -y ppa:dyatlov-igor/materia-theme && apt-get update && ap
 RUN mkdir -p /root/.vnc/ && echo '#!/bin/sh \nunset SESSION_MANAGER \nunset DBUS_SESSION_BUS_ADDRESS \nstartxfce4 &' \
     >> /root/.vnc/xstartup.turbovnc && chmod a+x /root/.vnc/xstartup.turbovnc
 
-#CLEAN-UP
-RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
-
 #EXPOSE VNC and noVNC
 EXPOSE 5900 5901 6080 40001
 
@@ -50,3 +47,6 @@ ENV NVIDIA_REQUIRE_CUDA "cuda>=9.0"
 #MAKE START SCRIPT
 RUN echo '#!/bin/bash\n /opt/TurboVNC/bin/vncserver -3dwm -securitytypes tlsnone,x509none,none && /opt/noVNC/utils/launch.sh --vnc localhost:5900' \
     >> /usr/local/sbin/start && chmod a+x /usr/local/sbin/start
+
+#CLEAN-UP
+RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rif /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* /root/.cache/*
