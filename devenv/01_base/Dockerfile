@@ -26,8 +26,8 @@ ENV LC_ALL en_US.UTF-8
 
 # CORE STAFF
 RUN apt-get install -y --no-install-recommends \
-	build-essential cmake automake libpq-dev libffi-dev gfortran gdb sudo git wget curl iptables ninja-build\
-	python python-pip python3 python3-pip python3-tk libtool libboost-program-options-dev protobuf-compiler\
+	build-essential cmake automake libpq-dev libffi-dev gfortran gdb sudo git wget curl iptables ninja-build \
+	python python-pip python3 python3-pip python3-tk libtool libboost-program-options-dev protobuf-compiler patchelf ffmpeg\
 	libpython-dev ca-certificates libglib2.0-0 libeigen3-dev xz-utils pciutils && apt-get clean
 
 RUN apt install -y --no-install-recommends fish vim openssh-server openssl tmux ranger net-tools locales bzip2 python3-wheel python3-setuptools 
