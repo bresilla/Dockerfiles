@@ -49,6 +49,7 @@ RUN echo "${USER}:x:${UID}:${GID}:${USER},,,:/home/${USER}:/bin/bash" >> /etc/pa
     echo "${USER} ALL=(ALL) NOPASSWD: ALL" >> /etc/sudoers.d/${USER} && \
     chmod 0440 /etc/sudoers.d/${USER} && \
     chown $UID:${GID} -R /home/${USER}
+RUN mkdir /home/bresilla/.config && chown -R bresilla:bresilla /home/bresilla/.config
 
 #WORKDIR
 RUN mkdir /workdir
