@@ -49,4 +49,5 @@ RUN echo '#!/bin/bash\n /opt/TurboVNC/bin/vncserver -3dwm -securitytypes tlsnone
     >> /usr/local/sbin/start && chmod a+x /usr/local/sbin/start
 
 #CLEAN-UP
-RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rif /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/* /root/.cache/*
+#RUN apt-get autoremove -y && apt-get clean autoclean && rm -rif /var/lib/apt/lists/{apt,dpkg,cache,log}
+RUN rm -rf /tmp/* /var/tmp/* /root/.cache/*

@@ -52,7 +52,8 @@ RUN echo "${USER}:x:${UID}:${GID}:${USER},,,:/home/${USER}:/bin/bash" >> /etc/pa
 RUN mkdir /home/bresilla/.config && chown -R bresilla:bresilla /home/bresilla/.config
 
 #WORKDIR
-RUN mkdir /workdir
+WORKDIR /home/bresilla/workplace
 
 #CLEAN-UP
-RUN apt-mark hold iptables && apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log} /tmp/* /var/tmp/*
+#RUN apt-get autoremove -y && apt-get clean autoclean && rm -rf /var/lib/apt/lists/{apt,dpkg,cache,log}
+RUN rm -rf /tmp/* /var/tmp/* /root/.cache/*
